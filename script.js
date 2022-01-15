@@ -15,6 +15,7 @@ class Tile  {
         this.posX = posX;
         this.posY = posY;
         this.nbMine = 0;
+        this.nbFlagsAround = 0;
         this.returned = false;
     }
 
@@ -31,7 +32,7 @@ class Tile  {
                 thisCellule.setAttribute("class", "cellule-"+this.nbMine);
             }
 
-            if(checkGameOver === "check")  {
+            if(checkGameOver === "check" && thisCellule.className !== "cellule-flag")  {
                 checkForGameOver(this.nbMine);
             }
         }
@@ -40,10 +41,15 @@ class Tile  {
     right_clicked(x, y)  {
         if(playable)  {
             let thisCellule = document.getElementById(x+'-'+y);
+            let around = area(x, y);
 
             if(thisCellule.className == "cellule")  {
                 thisCellule.setAttribute("class", "cellule-flag");
                 flags++;
+
+                for(let i=0; i<around.length; i++)  {
+                    around[i].nbFlagsAround++;
+                }
 
                 if(this.nbMine===9)  {
                     nbMinesFound++;
@@ -53,6 +59,10 @@ class Tile  {
             else if(thisCellule.className == "cellule-flag")  {
                 thisCellule.setAttribute("class", "cellule");
                 flags--;
+
+                for(let i=0; i<around.length; i++)  {
+                    around[i].nbFlagsAround--;
+                }
 
                 if(this.nbMine === 9)  {
                     nbMinesFound--;
@@ -116,6 +126,19 @@ function gameLoop()  {
                     
                     mines.innerHTML = nbMines;
                     countMinesInArea();
+                }
+
+                if(squares[i][j].nbMine !== 0 && squares[i][j].nbMine === squares[i][j].nbFlagsAround && squares[i][j].returned)  {
+                    let around = area(i, j);
+
+                    for(let k=0; k<around.length; k++)  {
+                        if(!around[k].returned)  {
+                            around[k].clicked(around[k].posX, around[k].posY, "check");
+                            if(around[k].nbMine === 0)  {
+                                discoverArea(around[k].posX, around[k].posY);
+                            }
+                        }
+                    }
                 }
 
                 squares[i][j].clicked(i, j, "check");
