@@ -285,3 +285,51 @@ function discoverArea(i, j)  {
         }
     }
 }
+
+
+function area(x, y)  {
+    let area = [];
+    let index = 0;
+
+    if(x !== 0 && y !== 0)  {
+        area[index] = squares[x-1][j-1];
+        index++;
+    }
+
+    if(x !== 0)  {
+        area[index] = squares[x-1][y];
+        index++;
+    }
+
+    if(x !== 0 && y !== gridWidth-1)  {
+        area[index] = squares[x-1][y+1];
+        index++;
+    }
+
+    if(y !== 0)  {
+        area[index] = squares[x][y-1];
+        index++;
+    }
+
+    if(y != gridWidth-1)  {
+        area[index] = squares[x][y+1];
+        index++;
+    }
+
+    if(x != gridHeight-1 && y !== 0)  {
+        area[index] = squares[x+1][y-1];
+        index++;
+    }
+
+    if(x !== gridHeight-1)  {
+        area[index] = squares[x+1][y];
+        index++;
+    }
+    
+    if(x !== gridHeight-1 && y !== gridWidth-1)  {
+        area[index] = squares[x+1][y+1];
+        index++;
+    }
+
+    return area;
+}
