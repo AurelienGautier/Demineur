@@ -163,44 +163,10 @@ function countMinesInArea()  {
     for(let i = 0; i < gridHeight; i++)  {
         for(let j = 0; j < gridWidth; j++)  {
             if(squares[i][j].nbMine == 9)  {
-                if(i != 0 && j != 0)  {
-                    if(squares[i-1][j-1].nbMine != 9)  {
-                        squares[i-1][j-1].nbMine++;
-                    }
-                }
-                if(i != 0)  {
-                    if(squares[i-1][j].nbMine != 9)  {
-                        squares[i-1][j].nbMine++;
-                    }
-                }
-                if(i != 0 && j != gridWidth-1)  {
-                    if(squares[i-1][j+1].nbMine != 9)  {
-                        squares[i-1][j+1].nbMine++;
-                    }
-                }
-                if(j != 0)  {
-                    if(squares[i][j-1].nbMine != 9)  {
-                        squares[i][j-1].nbMine++;
-                    }
-                }
-                if(j != gridWidth-1)  {
-                    if(squares[i][j+1].nbMine != 9)  {
-                        squares[i][j+1].nbMine++;
-                    }
-                }
-                if(i != gridHeight-1 && j != 0)  {
-                    if(squares[i+1][j-1].nbMine != 9)  {
-                        squares[i+1][j-1].nbMine++;
-                    }
-                }
-                if(i != gridHeight-1)  {
-                    if(squares[i+1][j].nbMine != 9)  {
-                        squares[i+1][j].nbMine++;
-                    }
-                }
-                if(i != gridHeight-1 && j != gridWidth-1)  {
-                    if(squares[i+1][j+1].nbMine != 9)  {
-                        squares[i+1][j+1].nbMine++;
+                let around = area(i, j);
+                for(let k=0; k<around.length; k++)  {
+                    if(around[k].nbMine !== 9)  {
+                        around[k].nbMine++;
                     }
                 }
             }
@@ -213,7 +179,8 @@ function discoverArea(i, j)  {
     var squaresToDiscoverX = [];
     var squaresToDiscoverY = [];
     var nbToDiscover = 0;
-
+let around = area(i, j);
+console.log(around);
     if(i != 0 && j != 0)  {
         if(squares[i-1][j-1].nbMine === 0 && !squares[i-1][j-1].returned)  {
             squaresToDiscoverX[nbToDiscover] = i-1;
@@ -292,7 +259,7 @@ function area(x, y)  {
     let index = 0;
 
     if(x !== 0 && y !== 0)  {
-        area[index] = squares[x-1][j-1];
+        area[index] = squares[x-1][y-1];
         index++;
     }
 
