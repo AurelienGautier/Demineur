@@ -1,11 +1,11 @@
 var grid = document.getElementById("grid");
-var gridWidth = 30;
-var gridHeight = 16;
-var caseSize = 50;
+var nbMinesIndicator = document.getElementById("nbMinesIndicator");
+var gridWidth = 20;
+var gridHeight = 10;
 var firstClick = true;
 var nbMines = 0;
 var nbMinesFound = 0;
-var perdu = false;
+var playable = true;
 
 // Classe correspondant aux cases à déminer
 class Tile  {
@@ -16,46 +16,55 @@ class Tile  {
         this.returned = false;
     }
 
-    clicked(x, y)  {
-        if(!this.returned && document.getElementById(x+'-'+y).className !== "cellule-flag")  {
-            this.returned = true;
-            
-            if(this.nbMine !== 0 && this.nbMine !== 9)  {
-                document.getElementById(x+'-'+y).textContent = this.nbMine;
-            }
-            document.getElementById(x+'-'+y).setAttribute("class", "cellule-"+this.nbMine);
+    clicked(x, y, checkGameOver)  {
+        if(playable)  {
+            let thisCellule = document.getElementById(x+'-'+y);
 
-            if(this.nbMine === 9)  {
-                alert("T'as perdu, gnarf gnarf gnarf.");
-                perdu = true;
+            if(!this.returned && thisCellule.className !== "cellule-flag")  {
+                this.returned = true;
+                
+                if(this.nbMine !== 0 && this.nbMine !== 9)  {
+                    thisCellule.textContent = this.nbMine;
+                }
+                thisCellule.setAttribute("class", "cellule-"+this.nbMine);
+            }
+
+            if(checkGameOver === "check")  {
+                checkForGameOver(this.nbMine);
             }
         }
     }
 
     right_clicked(x, y)  {
-        if(document.getElementById(x+'-'+y).className == "cellule")  {
-            document.getElementById(x+'-'+y).setAttribute("class", "cellule-flag");
+        if(playable)  {
+            let thisCellule = document.getElementById(x+'-'+y);
 
-            if(this.nbMine===9)  {
-                nbMinesFound++;
+            if(thisCellule.className == "cellule")  {
+                thisCellule.setAttribute("class", "cellule-flag");
+
+                if(this.nbMine===9)  {
+                    nbMinesFound++;
+                }
             }
 
-            if(nbMinesFound === nbMines)  {
-                alert("jéjé t'as gagné poulette");
-            }
-        }
+            else if(thisCellule.className == "cellule-flag")  {
+                thisCellule.setAttribute("class", "cellule");
 
-        else if(document.getElementById(x+'-'+y).className == "cellule-flag")  {
-            document.getElementById(x+'-'+y).setAttribute("class", "cellule");
+                if(this.nbMine === 9)  {
+                    nbMinesFound--;
+                }
+            }
+
+            checkForWin();
         }
     }
 }
 
 // Génération de la grille
 var squares = [];
-for(let i = 0; i < 16; i++)  {
+for(let i = 0; i < gridHeight; i++)  {
     squares[i] = [i]
-    for(let j = 0; j < 30; j++)  {
+    for(let j = 0; j < gridWidth; j++)  {
         squares[i][j] = new Tile(i, j);
     }
 }
@@ -76,10 +85,9 @@ for(let i = 0; i < gridHeight; i++)  {
     grid.appendChild(newLine);
 }
 
+gameLoop();
 
-
-// Boucle de jeu
-
+function gameLoop()  {
     for(let i = 0; i < gridHeight; i ++)  {
         for(let j = 0; j < gridWidth; j++)  {
             document.getElementById(i+"-"+j).addEventListener('contextmenu', (e)=>{
@@ -103,7 +111,7 @@ for(let i = 0; i < gridHeight; i++)  {
                     countMinesInArea();
                 }
 
-                squares[i][j].clicked(i, j);
+                squares[i][j].clicked(i, j, "check");
 
                 if(squares[i][j].nbMine === 0)  {
                     discoverArea(i, j);
@@ -115,11 +123,40 @@ for(let i = 0; i < gridHeight; i++)  {
             }
         }
     }
+}
+
+function checkForWin()  {
+    if(nbMines == nbMinesFound && !firstClick)  {
+        for(let i=0; i<gridHeight; i++)  {
+            for(let j=0; j<gridWidth; j++)  {
+                squares[i][j].clicked(i, j, "check");
+            }
+        }
+
+        playable = false;
+
+        console.log("tu as gagné");
+    }
+}
+
+function checkForGameOver(number)  {
+    if(number === 9)  {
+        for(let i=0; i<gridHeight; i++)  {
+            for(let j=0; j<gridWidth; j++)  {
+                if(squares[i][j].nbMine===9)  {
+                    squares[i][j].clicked(i,j);
+                }
+            }
+        }
+
+        playable = false;
+    }
+}
 
 // Compte le nombre de mines autour de chaque case
 function countMinesInArea()  {
-    for(let i = 0; i < 16; i++)  {
-        for(let j = 0; j < 30; j++)  {
+    for(let i = 0; i < gridHeight; i++)  {
+        for(let j = 0; j < gridWidth; j++)  {
             if(squares[i][j].nbMine == 9)  {
                 if(i != 0 && j != 0)  {
                     if(squares[i-1][j-1].nbMine != 9)  {
@@ -131,7 +168,7 @@ function countMinesInArea()  {
                         squares[i-1][j].nbMine++;
                     }
                 }
-                if(i != 0 && j != 29)  {
+                if(i != 0 && j != gridWidth-1)  {
                     if(squares[i-1][j+1].nbMine != 9)  {
                         squares[i-1][j+1].nbMine++;
                     }
@@ -141,22 +178,22 @@ function countMinesInArea()  {
                         squares[i][j-1].nbMine++;
                     }
                 }
-                if(j != 29)  {
+                if(j != gridWidth-1)  {
                     if(squares[i][j+1].nbMine != 9)  {
                         squares[i][j+1].nbMine++;
                     }
                 }
-                if(i != 15 && j != 0)  {
+                if(i != gridHeight-1 && j != 0)  {
                     if(squares[i+1][j-1].nbMine != 9)  {
                         squares[i+1][j-1].nbMine++;
                     }
                 }
-                if(i != 15)  {
+                if(i != gridHeight-1)  {
                     if(squares[i+1][j].nbMine != 9)  {
                         squares[i+1][j].nbMine++;
                     }
                 }
-                if(i != 15 && j != 29)  {
+                if(i != gridHeight-1 && j != gridWidth-1)  {
                     if(squares[i+1][j+1].nbMine != 9)  {
                         squares[i+1][j+1].nbMine++;
                     }
@@ -188,7 +225,7 @@ function discoverArea(i, j)  {
         }
         squares[i-1][j].clicked(i-1, j);
     }
-    if(i != 0 && j != 29)  {
+    if(i != 0 && j != gridWidth-1)  {
         if(squares[i-1][j+1].nbMine === 0 && !squares[i-1][j+1].returned)  {
             squaresToDiscoverX[nbToDiscover] = i-1;
             squaresToDiscoverY[nbToDiscover] = j+1;
@@ -204,7 +241,7 @@ function discoverArea(i, j)  {
         }
         squares[i][j-1].clicked(i, j-1);
     }
-    if(j != 29)  {
+    if(j != gridWidth-1)  {
         if(squares[i][j+1].nbMine === 0 && !squares[i][j+1].returned)  {
             squaresToDiscoverX[nbToDiscover] = i;
             squaresToDiscoverY[nbToDiscover] = j+1;
@@ -212,7 +249,7 @@ function discoverArea(i, j)  {
         }
         squares[i][j+1].clicked(i, j+1);
     }
-    if(i != 15 && j != 0)  {
+    if(i != gridHeight-1 && j != 0)  {
         if(squares[i+1][j-1].nbMine === 0 && !squares[i+1][j-1].returned)  {
             squaresToDiscoverX[nbToDiscover] = i+1;
             squaresToDiscoverY[nbToDiscover] = j-1;
@@ -220,7 +257,7 @@ function discoverArea(i, j)  {
         }
         squares[i+1][j-1].clicked(i+1, j-1);
     }
-    if(i != 15)  {
+    if(i != gridHeight-1)  {
         if(squares[i+1][j].nbMine === 0 && !squares[i+1][j].returned)  {
             squaresToDiscoverX[nbToDiscover] = i+1;
             squaresToDiscoverY[nbToDiscover] = j;
@@ -228,7 +265,7 @@ function discoverArea(i, j)  {
         }
         squares[i+1][j].clicked(i+1, j);
     }
-    if(i != 15 && j != 29)  {
+    if(i != gridHeight-1 && j != gridWidth-1)  {
         if(squares[i+1][j+1].nbMine === 0 && !squares[i+1][j+1].returned)  {
             squaresToDiscoverX[nbToDiscover] = i+1;
             squaresToDiscoverY[nbToDiscover] = j+1;
