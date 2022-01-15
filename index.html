@@ -8,7 +8,18 @@
 
 
 <body>
-    <p id="nbMinesIndicator"></p>
+    <div id="indications">
+        <div id="flags">
+            <img id="flag-img" src="drapeau.png"/>
+            <p id="flagsUsed">0</p>
+        </div>
+
+        <div id="mines">
+            <img id="mine-img" src="mine.png"/>
+            <p id="nbMines">0</p>
+        </div>
+    </div>
+
     <table id="grid"></table>
 
     <script src="script.js"></script>

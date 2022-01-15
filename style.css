@@ -3,6 +3,17 @@
     font-family: sans-serif;
 }
 
+#indications, #flags, #mines
+{
+    display: flex;
+}
+
+#flag-img, #mine-img
+{
+    width: 15px;
+    height: 15px;
+}
+
 .cellule, .cellule-0, .cellule-1, .cellule-2, .cellule-3, .cellule-4, .cellule-5, .cellule-6, .cellule-7, .cellule-8, .cellule-9
 {
     border: none;

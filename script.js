@@ -1,10 +1,12 @@
 var grid = document.getElementById("grid");
-var nbMinesIndicator = document.getElementById("nbMinesIndicator");
+var flagsUsed = document.getElementById("flagsUsed");
+var mines = document.getElementById("nbMines");
 var gridWidth = 20;
 var gridHeight = 10;
 var firstClick = true;
 var nbMines = 0;
 var nbMinesFound = 0;
+var flags = 0;
 var playable = true;
 
 // Classe correspondant aux cases à déminer
@@ -41,6 +43,7 @@ class Tile  {
 
             if(thisCellule.className == "cellule")  {
                 thisCellule.setAttribute("class", "cellule-flag");
+                flags++;
 
                 if(this.nbMine===9)  {
                     nbMinesFound++;
@@ -49,6 +52,7 @@ class Tile  {
 
             else if(thisCellule.className == "cellule-flag")  {
                 thisCellule.setAttribute("class", "cellule");
+                flags--;
 
                 if(this.nbMine === 9)  {
                     nbMinesFound--;
@@ -56,6 +60,8 @@ class Tile  {
             }
 
             checkForWin();
+
+            flagsUsed.innerHTML = flags;
         }
     }
 }
@@ -107,7 +113,8 @@ function gameLoop()  {
                             }
                         }
                     }
-        
+                    
+                    mines.innerHTML = nbMines;
                     countMinesInArea();
                 }
 
@@ -134,8 +141,6 @@ function checkForWin()  {
         }
 
         playable = false;
-
-        console.log("tu as gagné");
     }
 }
 
