@@ -175,75 +175,20 @@ function countMinesInArea()  {
 }
 
 // Découvre tous les 0 adjacents
-function discoverArea(i, j)  {
+function discoverArea(x, y)  {
     var squaresToDiscoverX = [];
     var squaresToDiscoverY = [];
     var nbToDiscover = 0;
-let around = area(i, j);
-console.log(around);
-    if(i != 0 && j != 0)  {
-        if(squares[i-1][j-1].nbMine === 0 && !squares[i-1][j-1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i-1;
-            squaresToDiscoverY[nbToDiscover] = j-1;
+
+    let around = area(x, y);
+
+    for(let i=0; i<around.length; i++)  {
+        if(around[i].nbMine === 0 && !around[i].returned)  {
+            squaresToDiscoverX[nbToDiscover] = around[i].posX;
+            squaresToDiscoverY[nbToDiscover] = around[i].posY;
             nbToDiscover++;
         }
-        squares[i-1][j-1].clicked(i-1, j-1);
-    }
-    if(i != 0)  {
-        if(squares[i-1][j].nbMine === 0 && !squares[i-1][j].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i-1;
-            squaresToDiscoverY[nbToDiscover] = j;
-            nbToDiscover++;
-        }
-        squares[i-1][j].clicked(i-1, j);
-    }
-    if(i != 0 && j != gridWidth-1)  {
-        if(squares[i-1][j+1].nbMine === 0 && !squares[i-1][j+1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i-1;
-            squaresToDiscoverY[nbToDiscover] = j+1;
-            nbToDiscover++;
-        }
-        squares[i-1][j+1].clicked(i-1, j+1);
-    }
-    if(j != 0)  {
-        if(squares[i][j-1].nbMine === 0 && !squares[i][j-1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i;
-            squaresToDiscoverY[nbToDiscover] = j-1;
-            nbToDiscover++;
-        }
-        squares[i][j-1].clicked(i, j-1);
-    }
-    if(j != gridWidth-1)  {
-        if(squares[i][j+1].nbMine === 0 && !squares[i][j+1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i;
-            squaresToDiscoverY[nbToDiscover] = j+1;
-            nbToDiscover++;
-        }
-        squares[i][j+1].clicked(i, j+1);
-    }
-    if(i != gridHeight-1 && j != 0)  {
-        if(squares[i+1][j-1].nbMine === 0 && !squares[i+1][j-1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i+1;
-            squaresToDiscoverY[nbToDiscover] = j-1;
-            nbToDiscover++;
-        }
-        squares[i+1][j-1].clicked(i+1, j-1);
-    }
-    if(i != gridHeight-1)  {
-        if(squares[i+1][j].nbMine === 0 && !squares[i+1][j].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i+1;
-            squaresToDiscoverY[nbToDiscover] = j;
-            nbToDiscover++;
-        }
-        squares[i+1][j].clicked(i+1, j);
-    }
-    if(i != gridHeight-1 && j != gridWidth-1)  {
-        if(squares[i+1][j+1].nbMine === 0 && !squares[i+1][j+1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i+1;
-            squaresToDiscoverY[nbToDiscover] = j+1;
-            nbToDiscover++;
-        }
-        squares[i+1][j+1].clicked(i+1, j+1);
+        around[i].clicked(around[i].posX, around[i].posY);
     }
 
     for(let i = 0; i < nbToDiscover; i ++)  {
