@@ -163,44 +163,11 @@ function countMinesInArea()  {
     for(let i = 0; i < gridHeight; i++)  {
         for(let j = 0; j < gridWidth; j++)  {
             if(squares[i][j].nbMine == 9)  {
-                if(i != 0 && j != 0)  {
-                    if(squares[i-1][j-1].nbMine != 9)  {
-                        squares[i-1][j-1].nbMine++;
-                    }
-                }
-                if(i != 0)  {
-                    if(squares[i-1][j].nbMine != 9)  {
-                        squares[i-1][j].nbMine++;
-                    }
-                }
-                if(i != 0 && j != gridWidth-1)  {
-                    if(squares[i-1][j+1].nbMine != 9)  {
-                        squares[i-1][j+1].nbMine++;
-                    }
-                }
-                if(j != 0)  {
-                    if(squares[i][j-1].nbMine != 9)  {
-                        squares[i][j-1].nbMine++;
-                    }
-                }
-                if(j != gridWidth-1)  {
-                    if(squares[i][j+1].nbMine != 9)  {
-                        squares[i][j+1].nbMine++;
-                    }
-                }
-                if(i != gridHeight-1 && j != 0)  {
-                    if(squares[i+1][j-1].nbMine != 9)  {
-                        squares[i+1][j-1].nbMine++;
-                    }
-                }
-                if(i != gridHeight-1)  {
-                    if(squares[i+1][j].nbMine != 9)  {
-                        squares[i+1][j].nbMine++;
-                    }
-                }
-                if(i != gridHeight-1 && j != gridWidth-1)  {
-                    if(squares[i+1][j+1].nbMine != 9)  {
-                        squares[i+1][j+1].nbMine++;
+                let around = area(i, j);
+
+                for(let k = 0; k < around.length; k++)  {
+                    if(around[k].nbMine !== 9)  {
+                        around[k].nbMine++;
                     }
                 }
             }
@@ -209,81 +176,93 @@ function countMinesInArea()  {
 }
 
 // Découvre tous les 0 adjacents
-function discoverArea(i, j)  {
+function discoverArea(x, y)  {
     var squaresToDiscoverX = [];
     var squaresToDiscoverY = [];
     var nbToDiscover = 0;
 
-    if(i != 0 && j != 0)  {
-        if(squares[i-1][j-1].nbMine === 0 && !squares[i-1][j-1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i-1;
-            squaresToDiscoverY[nbToDiscover] = j-1;
+    let around = area(x, y);
+    console.log(around);
+    for(let i = 0; i < around.length; i++)  {
+        if(around[i].nbMine === 0 && !around[i].returned)  {
+            squaresToDiscoverX[nbToDiscover] = around[nbToDiscover].posX;
+            squaresToDiscoverY[nbToDiscover] = around[nbToDiscover].posY;
             nbToDiscover++;
         }
-        squares[i-1][j-1].clicked(i-1, j-1);
-    }
-    if(i != 0)  {
-        if(squares[i-1][j].nbMine === 0 && !squares[i-1][j].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i-1;
-            squaresToDiscoverY[nbToDiscover] = j;
-            nbToDiscover++;
-        }
-        squares[i-1][j].clicked(i-1, j);
-    }
-    if(i != 0 && j != gridWidth-1)  {
-        if(squares[i-1][j+1].nbMine === 0 && !squares[i-1][j+1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i-1;
-            squaresToDiscoverY[nbToDiscover] = j+1;
-            nbToDiscover++;
-        }
-        squares[i-1][j+1].clicked(i-1, j+1);
-    }
-    if(j != 0)  {
-        if(squares[i][j-1].nbMine === 0 && !squares[i][j-1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i;
-            squaresToDiscoverY[nbToDiscover] = j-1;
-            nbToDiscover++;
-        }
-        squares[i][j-1].clicked(i, j-1);
-    }
-    if(j != gridWidth-1)  {
-        if(squares[i][j+1].nbMine === 0 && !squares[i][j+1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i;
-            squaresToDiscoverY[nbToDiscover] = j+1;
-            nbToDiscover++;
-        }
-        squares[i][j+1].clicked(i, j+1);
-    }
-    if(i != gridHeight-1 && j != 0)  {
-        if(squares[i+1][j-1].nbMine === 0 && !squares[i+1][j-1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i+1;
-            squaresToDiscoverY[nbToDiscover] = j-1;
-            nbToDiscover++;
-        }
-        squares[i+1][j-1].clicked(i+1, j-1);
-    }
-    if(i != gridHeight-1)  {
-        if(squares[i+1][j].nbMine === 0 && !squares[i+1][j].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i+1;
-            squaresToDiscoverY[nbToDiscover] = j;
-            nbToDiscover++;
-        }
-        squares[i+1][j].clicked(i+1, j);
-    }
-    if(i != gridHeight-1 && j != gridWidth-1)  {
-        if(squares[i+1][j+1].nbMine === 0 && !squares[i+1][j+1].returned)  {
-            squaresToDiscoverX[nbToDiscover] = i+1;
-            squaresToDiscoverY[nbToDiscover] = j+1;
-            nbToDiscover++;
-        }
-        squares[i+1][j+1].clicked(i+1, j+1);
+
+        around[i].clicked(around[i].posX, around[i].posY);
     }
 
-    for(let i = 0; i < nbToDiscover; i ++)  {
+    for(let i = 0; i < nbToDiscover; i++)  {
         if(squares[squaresToDiscoverX[i]][squaresToDiscoverY[i]].nbMine === 0)  {
             discoverArea(squaresToDiscoverX[i], squaresToDiscoverY[i]);
         }
     }
+
+    // if(i != 0 && j != 0)  {
+    //     if(squares[i-1][j-1].nbMine === 0 && !squares[i-1][j-1].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i-1;
+    //         squaresToDiscoverY[nbToDiscover] = j-1;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i-1][j-1].clicked(i-1, j-1);
+    // }
+    // if(i != 0)  {
+    //     if(squares[i-1][j].nbMine === 0 && !squares[i-1][j].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i-1;
+    //         squaresToDiscoverY[nbToDiscover] = j;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i-1][j].clicked(i-1, j);
+    // }
+    // if(i != 0 && j != gridWidth-1)  {
+    //     if(squares[i-1][j+1].nbMine === 0 && !squares[i-1][j+1].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i-1;
+    //         squaresToDiscoverY[nbToDiscover] = j+1;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i-1][j+1].clicked(i-1, j+1);
+    // }
+    // if(j != 0)  {
+    //     if(squares[i][j-1].nbMine === 0 && !squares[i][j-1].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i;
+    //         squaresToDiscoverY[nbToDiscover] = j-1;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i][j-1].clicked(i, j-1);
+    // }
+    // if(j != gridWidth-1)  {
+    //     if(squares[i][j+1].nbMine === 0 && !squares[i][j+1].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i;
+    //         squaresToDiscoverY[nbToDiscover] = j+1;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i][j+1].clicked(i, j+1);
+    // }
+    // if(i != gridHeight-1 && j != 0)  {
+    //     if(squares[i+1][j-1].nbMine === 0 && !squares[i+1][j-1].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i+1;
+    //         squaresToDiscoverY[nbToDiscover] = j-1;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i+1][j-1].clicked(i+1, j-1);
+    // }
+    // if(i != gridHeight-1)  {
+    //     if(squares[i+1][j].nbMine === 0 && !squares[i+1][j].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i+1;
+    //         squaresToDiscoverY[nbToDiscover] = j;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i+1][j].clicked(i+1, j);
+    // }
+    // if(i != gridHeight-1 && j != gridWidth-1)  {
+    //     if(squares[i+1][j+1].nbMine === 0 && !squares[i+1][j+1].returned)  {
+    //         squaresToDiscoverX[nbToDiscover] = i+1;
+    //         squaresToDiscoverY[nbToDiscover] = j+1;
+    //         nbToDiscover++;
+    //     }
+    //     squares[i+1][j+1].clicked(i+1, j+1);
+    // }
 }
 
 
@@ -292,7 +271,7 @@ function area(x, y)  {
     let index = 0;
 
     if(x !== 0 && y !== 0)  {
-        area[index] = squares[x-1][j-1];
+        area[index] = squares[x-1][y-1];
         index++;
     }
 
@@ -311,12 +290,12 @@ function area(x, y)  {
         index++;
     }
 
-    if(y != gridWidth-1)  {
+    if(y !== gridWidth-1)  {
         area[index] = squares[x][y+1];
         index++;
     }
 
-    if(x != gridHeight-1 && y !== 0)  {
+    if(x !== gridHeight-1 && y !== 0)  {
         area[index] = squares[x+1][y-1];
         index++;
     }
