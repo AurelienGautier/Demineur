@@ -116,7 +116,6 @@ for(let i = 0; i < gridHeight; i++)  {
         }
     }
 
-
 // Compte le nombre de mines autour de chaque case
 function countMinesInArea()  {
     for(let i = 0; i < 16; i++)  {
