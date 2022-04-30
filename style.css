@@ -1,6 +1,9 @@
 #grid
 {
     font-family: sans-serif;
+
+    table-layout: fixed;
+    border-collapse: collapse;
 }
 
 #indications, #flags, #mines
@@ -8,13 +11,7 @@
     display: flex;
 }
 
-#flag-img, #mine-img
-{
-    width: 15px;
-    height: 15px;
-}
-
-.cellule, .cellule-0, .cellule-1, .cellule-2, .cellule-3, .cellule-4, .cellule-5, .cellule-6, .cellule-7, .cellule-8, .cellule-9
+.cellule, .cellule-0, .cellule-1, .cellule-2, .cellule-3, .cellule-4, .cellule-5, .cellule-6, .cellule-7, .cellule-8, .cellule-9,        .cellule-flag
 {
     border: none;
     background-color: #f9f9f9;
@@ -25,13 +22,9 @@
     min-width: 15px;
     max-width: 15px;
 
-    min-height: 15px;
-    max-height: 15px;
-
     text-align: center;
 
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 11px;
 }
 
 .cellule-0
@@ -42,7 +35,6 @@
 .cellule-1
 {
     color: blue;
-    
 }
 
 .cellule-2
@@ -78,14 +70,4 @@
 .cellule-8
 {
     color: #000000;
-}
-
-.cellule-9
-{
-    background: url(mine.png) no-repeat;
-}
-
-.cellule-flag
-{
-    background: #f9f9f9 url(drapeau.png) no-repeat;
 }

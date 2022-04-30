@@ -1,6 +1,6 @@
-var grid = document.getElementById("grid");
-var flagsUsed = document.getElementById("flagsUsed");
-var mines = document.getElementById("nbMines");
+const grid = document.getElementById("grid");
+const flagsUsed = document.getElementById("flagsUsed");
+const mines = document.getElementById("nbMines");
 var gridWidth = 20;
 var gridHeight = 10;
 var firstClick = true;
@@ -29,6 +29,10 @@ class Tile  {
                 if(this.nbMine !== 0 && this.nbMine !== 9)  {
                     thisCellule.textContent = this.nbMine;
                 }
+                else if(this.nbMine === 9)  {
+                    thisCellule.textContent = '💣';
+                }
+
                 thisCellule.setAttribute("class", "cellule-"+this.nbMine);
             }
 
@@ -45,6 +49,7 @@ class Tile  {
 
             if(thisCellule.className == "cellule")  {
                 thisCellule.setAttribute("class", "cellule-flag");
+                thisCellule.textContent = '🚩';
                 flags++;
 
                 for(let i=0; i<around.length; i++)  {
@@ -55,9 +60,9 @@ class Tile  {
                     nbMinesFound++;
                 }
             }
-
             else if(thisCellule.className == "cellule-flag")  {
                 thisCellule.setAttribute("class", "cellule");
+                thisCellule.textContent = '';
                 flags--;
 
                 for(let i=0; i<around.length; i++)  {
@@ -91,8 +96,10 @@ for(let i = 0; i < gridHeight; i++)  {
 
     for(let j = 0; j < gridWidth; j++)  {
         newCol = document.createElement("td");
+
         newCol.setAttribute("id", i+'-'+j);
         newCol.setAttribute("class", "cellule");
+
         newCol.style.border = "1px solid black";
 
         newLine.appendChild(newCol);
@@ -211,6 +218,7 @@ function discoverArea(x, y)  {
             squaresToDiscoverY[nbToDiscover] = around[i].posY;
             nbToDiscover++;
         }
+
         around[i].clicked(around[i].posX, around[i].posY);
     }
 
