@@ -1,73 +1,63 @@
-#grid
-{
+#indications {
+    display: flex;
+}
+
+#grid {
     font-family: sans-serif;
 
     table-layout: fixed;
     border-collapse: collapse;
 }
 
-#indications, #flags, #mines
-{
-    display: flex;
-}
-
-.cellule, .cellule-0, .cellule-1, .cellule-2, .cellule-3, .cellule-4, .cellule-5, .cellule-6, .cellule-7, .cellule-8, .cellule-9,        .cellule-flag
-{
-    border: none;
+.cellule {
     background-color: #f9f9f9;
 
     width: 15px;
     height: 15px;
 
     min-width: 15px;
+    min-height: 15px;
+
     max-width: 15px;
+    max-height: 15px;
 
     text-align: center;
 
     font-size: 11px;
 }
 
-.cellule-0
-{
+.cellule-0 {
     background-color:#dbdbdb;
 }
 
-.cellule-1
-{
+.cellule-1 {
     color: blue;
 }
 
-.cellule-2
-{
+.cellule-2 {
     color: green;
 }
 
-.cellule-3
-{
+.cellule-3 {
     color: #FF0000;
 }
 
-.cellule-4
-{
+.cellule-4 {
     color: #000084;
 }
 
-.cellule-5
-{
+.cellule-5 {
     color: #840000;
 }
 
-.cellule-6
-{
+.cellule-6 {
     color: #008284;
 }
 
-.cellule-7
-{
+.cellule-7 {
     color: #840084;
 }
 
-.cellule-8
-{
+.cellule-8 {
     color: #000000;
 }
